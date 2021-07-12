@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Penalized Multiple-Group Factor Analysis</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Penalized Multiple-Group Factor Analysis</h1>
+
+
+
+<style type="text/css">
+pre {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 600px;
+}
+</style>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><strong>Aim</strong>. This vignette shows how to fit a penalized multiple-group factor analysis model with the alasso penalty using the routines in the <code>penfa</code> package. The penalties will automatically encourage sparsity in the factor structures, and invariance in the loadings and intercepts.</p>
+<p><strong>Data</strong>. For illustration purposes, we use the cross-cultural data set <code>ccdata</code> containing the standardized ratings to 12 items concerning organizational citizenship behavior. Employees from different countries were asked to rate their attitudes towards helping other employees and giving suggestions for improved work conditions. The items are thought to measure two latent factors: <strong>help</strong>, defined by the first seven items (<code>h1</code> to <code>h7</code>), and <strong>voice</strong>, represented by the last five items (<code>v1</code> to <code>v5</code>). See <code>?ccdata</code> for details.</p>
+<p>This data set is a standardized version of the one in the <a href="https://github.com/Jo-Karl/ccpsyc/"><code>ccpsyc</code></a> package, and only considers employees from Lebanon and Taiwan (i.e., <code>&quot;LEB&quot;</code>, <code>&quot;TAIW&quot;</code>). The country of origin is the group variable for the multiple-group analysis. This vignette is meant as a demo of the capabilities of <code>penfa</code>; please refer to Fischer et al. (2019) and Fischer and Karl (2019) for a description and analysis of these data.</p>
+<p>Let us load and inspect <code>ccdata</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(penfa)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ccdata)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ccdata)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">##    country                h1                 h2                h3                 h4         </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">##  Length:767         Min.   :-2.62004   Min.   :-2.9034   Min.   :-2.63082   Min.   :-3.0441  </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">##  Class :character   1st Qu.:-0.69516   1st Qu.:-0.2163   1st Qu.:-0.70356   1st Qu.:-0.2720  </span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">##  Mode  :character   Median :-0.05354   Median : 0.4554   Median :-0.06114   Median : 0.4211  </span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Mean   : 0.00000   Mean   : 0.0000   Mean   : 0.00000   Mean   : 0.0000  </span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">##                     3rd Qu.: 0.58809   3rd Qu.: 0.4554   3rd Qu.: 0.58128   3rd Qu.: 0.4211  </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Max.   : 1.22971   Max.   : 1.1272   Max.   : 1.22370   Max.   : 1.1141  </span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">##        h5                h6                h7                v1                  v2           </span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  Min.   :-2.9105   Min.   :-2.9541   Min.   :-2.8364   Min.   :-2.627694   Min.   :-2.674430  </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  1st Qu.:-0.8662   1st Qu.:-0.9092   1st Qu.:-0.7860   1st Qu.:-0.660770   1st Qu.:-0.671219  </span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  Median : 0.4966   Median : 0.4541   Median :-0.1025   Median :-0.005129   Median :-0.003482  </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="do">##  Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.000000   Mean   : 0.000000  </span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  3rd Qu.: 0.4966   3rd Qu.: 0.4541   3rd Qu.: 0.5810   3rd Qu.: 0.650512   3rd Qu.: 0.664255  </span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="do">##  Max.   : 1.1781   Max.   : 1.1358   Max.   : 1.2645   Max.   : 1.306154   Max.   : 1.331992  </span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">##        v3                 v4                 v5          </span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="do">##  Min.   :-2.65214   Min.   :-2.65722   Min.   :-2.51971  </span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="do">##  1st Qu.:-0.68800   1st Qu.:-0.68041   1st Qu.:-0.61127  </span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">##  Median :-0.03329   Median :-0.02148   Median : 0.02488  </span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="do">##  Mean   : 0.00000   Mean   : 0.00000   Mean   : 0.00000  </span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="do">##  3rd Qu.: 0.62142   3rd Qu.: 0.63746   3rd Qu.: 0.66103  </span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="do">##  Max.   : 1.27613   Max.   : 1.29639   Max.   : 1.29718</span></span></code></pre></div>
+</div>
+<div id="model-specification" class="section level2">
+<h2>Model specification</h2>
+<p>The syntax becomes more elaborate than the one in <code>vignette(&quot;automatic-tuning-selection&quot;)</code> due to the additional specification of the mean structure. Following the rationale in Geminiani et al. (2021), we only specify the minimum number of identification constraints. The metric of the factors is accommodated through the ‘marker-variable’ approach, with the markers being <code>h1</code> for <code>help</code> and <code>v1</code> for <code>voice</code>: the primary loadings of the markers are set to 1, and their intercepts to 0. To avoid rotational freedom, the secondary loading of the markers are set to zero. Intercepts for multiple variables can be introduced by specifying the variables of interest on the left-hand side, followed ‘+’ signs, and on the right-hand side the tilde operator <code>~</code> and the number 1. By default, factor means are fixed to zero. Provided that identification restrictions are applied, users can force the estimation of any model parameter through a pre-multiplication by <code>NA</code> (i.e., <code>&#39;help  ~ NA*1&#39;</code> and <code>&#39;voice ~ NA*1&#39;</code>). Alternatively, factor means can be estimated by setting <code>int.lv.free = TRUE</code> in the model function call. If the variable appearing in the intercept formulas is observed, then the formula specifies the intercept term for that item; if the variable is latent (i.e., a factor), then the formula specifies a factor mean. By default, unique variances are automatically added to the model, and the factors are allowed to correlate.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>syntax.mg <span class="ot">=</span> <span class="st">&#39;help  =~ 1*h1 +          h2 +          h3 + h4 + h5 + h6 + h7 + 0*v1 + v2 + v3 + v4 + v5</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">             voice =~ 0*h1 + start(0)*h2 + start(0)*h3 + h4 + h5 + h6 + h7 + 1*v1 + v2 + v3 + v4 + v5</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">             </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">             h2 + h3 + h4 + h5 + h6 + h7 + v2 + v3 + v4 + v5 ~ 1 </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">             help  ~ NA*1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">             voice ~ NA*1 &#39;</span></span></code></pre></div>
+<p>Users can take advantage of the <code>start()</code> function to provide informative starting values to some model parameters and hence facilitate the estimation process. In the syntax above, we specified the starting values for two secondary loadings to zero. These specifications can be modified by altering the syntax (see <code>?penfa</code> for details on how to write the model syntax).</p>
+</div>
+<div id="model-fitting" class="section level2">
+<h2>Model fitting</h2>
+<p>As discussed in <code>vignette(&quot;automatic-tuning-selection&quot;)</code>, we first fit an unpenalized model to obtain the maximum likelihood estimates to be used as weights for the alasso. In the <code>group</code> argument, we indicate the name of the group variable in the data set, which is the <code>country</code> of origin of the employees. We also set <code>pen.shrink = &quot;none&quot;</code>, and <code>strategy = &quot;fixed&quot;</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mle.fitMG <span class="ot">&lt;-</span> <span class="fu">penfa</span>(<span class="do">## factor model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">model =</span> syntax.mg,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data  =</span> ccdata,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">group =</span> <span class="st">&quot;country&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                   <span class="do">## (no) penalization</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">pen.shrink =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">pen.diff =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">eta =</span> <span class="fu">list</span>(<span class="at">shrink =</span> <span class="fu">c</span>(<span class="st">&quot;lambda&quot;</span> <span class="ot">=</span> <span class="dv">0</span>), <span class="at">diff =</span> <span class="fu">c</span>(<span class="st">&quot;none&quot;</span> <span class="ot">=</span> <span class="dv">0</span>)),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">strategy =</span> <span class="st">&quot;fixed&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">verbose =</span> <span class="cn">FALSE</span>) </span></code></pre></div>
+<p>The estimated parameters can be extracted via the <code>coef</code> method. We collect them in the <code>mle.weightsMG</code> vector, which will be used when fitting the penalized multiple-group model with the alasso penalty.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mle.weightsMG <span class="ot">&lt;-</span> <span class="fu">coef</span>(mle.fitMG)</span></code></pre></div>
+<p>We can now estimate a penalized multiple-group model with the alasso penalty. Following the rationale in Geminiani et al. (2021), we specify the following penalties:</p>
+<ul>
+<li><strong>Penalty 1</strong>: sparsity in the loading matrix of each group</li>
+<li><strong>Penalty 2</strong>: cross-group invariance of loadings</li>
+<li><strong>Penalty 3</strong>: cross-group invariance of intercepts</li>
+</ul>
+<p>This makes up for a total of three tuning parameters, whose optimal values can be fast and efficiently estimated through the automatic tuning procedure. The argument <code>pen.shrink</code> specifies the function for Penalty 1 (shrinkage), whereas <code>pen.diff</code> the penalty function for Penalties 2 and 3 (shrinkage of pairwise group differences). The names <code>&quot;lambda&quot;</code> and <code>&quot;tau&quot;</code> in the <code>eta</code> argument clarify that the shrinkage penalty has to be applied on the loadings, and the invariance penalty on both loadings and intercepts. The numeric values in <code>eta</code> constitute the starting values for each tuning value. By default the alasso penalty is computed with the exponent equal to 1, and the automatic procedure uses an influence factor of 4. Users desiring sparser solutions are encouraged to try higher values for these quantities through the corresponding arguments (<code>a.alasso</code>, <code>gamma</code>) in the <code>penfa</code> call.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>alasso.fitMG <span class="ot">&lt;-</span> <span class="fu">penfa</span>(<span class="do">## factor model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">model =</span> syntax.mg,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> ccdata,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">group =</span> <span class="st">&quot;country&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">int.lv.free =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                      <span class="do">## penalization</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pen.shrink =</span> <span class="st">&quot;alasso&quot;</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pen.diff =</span> <span class="st">&quot;alasso&quot;</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">eta =</span> <span class="fu">list</span>(<span class="at">shrink =</span> <span class="fu">c</span>(<span class="st">&quot;lambda&quot;</span> <span class="ot">=</span> <span class="fl">0.01</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">diff   =</span> <span class="fu">c</span>(<span class="st">&quot;lambda&quot;</span> <span class="ot">=</span> <span class="fl">0.1</span>, <span class="st">&quot;tau&quot;</span> <span class="ot">=</span> <span class="fl">0.01</span>)),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                      <span class="do">## automatic procedure</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                      <span class="at">strategy =</span> <span class="st">&quot;auto&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">gamma =</span> <span class="dv">4</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                      <span class="do">## alasso</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                      <span class="at">weights =</span> mle.weightsMG,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                      <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="do">## Automatic procedure: </span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="do">## Iteration  1 : 0.00215674 333904.89764079 0.00300201 </span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Iteration  2 : 0.00196862 29695.34424867 0.00771224 </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Largest absolute gradient value: 61.35414836</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Fisher information matrix is positive definite</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Eigenvalue range: [53.02582, 8.690956e+12]</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Trust region iterations: 24 </span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Factor solution: admissible </span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="do">## Effective degrees of freedom: 56.75552</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>alasso.fitMG</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## penfa 0.1.0 reached convergence</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of observations per group:                            </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">##     LEB                                                     402</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="do">##     TAIW                                                    365</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="do">##   Estimator                                                PMLE</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="do">##   Optimization method                              trust-region</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="do">##   Information                                            fisher</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="do">##   Strategy                                                 auto</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of iterations (total)                              116</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of two-steps (automatic)                             2</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="do">##   Effective degrees of freedom                           56.756</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="do">##   Penalty functions:                                           </span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="do">##     Sparsity                                             alasso</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="do">##     Invariance                                           alasso</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span></code></pre></div>
+<div id="summary" class="section level3">
+<h3>Summary</h3>
+<p>From the <code>summary</code> of the fitted object we can notice that the automatic tuning procedure required just a couple of iterations to converge. The optimal tuning parameters are 0.00196862 for Penalty 1, 29695.344 for Penalty 2, and 0.00771224 for Penalty 3.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(alasso.fitMG)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">## penfa 0.1.0 reached convergence</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of observations per group:                            </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="do">##     LEB                                                     402</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="do">##     TAIW                                                    365</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of groups                                            2</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of observed variables                               12</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of latent factors                                    2</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="do">##   Estimator                                                PMLE</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="do">##   Optimization method                              trust-region</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="do">##   Information                                            fisher</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="do">##   Strategy                                                 auto</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of iterations (total)                              116</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of two-steps (automatic)                             2</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="do">##   Influence factor                                            4</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="do">##   Number of parameters:                                        </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="do">##     Free                                                     34</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="do">##     Penalized                                                60</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="do">##   Effective degrees of freedom                           56.756</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="do">##   GIC                                                 17096.224</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="do">##   GBIC                                                17359.711</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="do">##   Penalty functions:                                           </span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="do">##     Sparsity                                             alasso</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="do">##     Invariance                                           alasso</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="do">##   Additional tuning parameter                                  </span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="do">##     alasso                                                    1</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="do">##   Optimal tuning parameters:                                   </span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="do">##     Sparsity                                                   </span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="do">##      - Factor loadings                                    0.002</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="do">##     Invariance                                                 </span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="do">##      - Factor loadings                                29695.344</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="do">##      - Intercepts                                         0.008</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="do">##                                                                </span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="do">## Parameter Estimates:</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="do">## Group 1 [LEB]:</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="do">## Latent Variables:</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="do">##   help =~                                                      </span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="do">##     h1             fixed       1.000             1.000    1.000</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="do">##     h2               pen       1.103    0.039    1.027    1.180</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="do">##     h3               pen       0.996    0.040    0.917    1.076</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="do">##     h4               pen       1.196    0.050    1.099    1.293</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="do">##     h5               pen       1.106    0.038    1.031    1.181</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="do">##     h6               pen       1.084    0.051    0.983    1.184</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="do">##     h7               pen       0.742    0.065    0.614    0.870</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="do">##     v1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="do">##     v2               pen       0.000                           </span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="do">##     v3               pen       0.000                           </span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="do">##     v4               pen       0.000                           </span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="do">##     v5               pen      -0.000                           </span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="do">##   voice =~                                                     </span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="do">##     h1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="do">##     h2               pen      -0.000                           </span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="do">##     h3               pen       0.000                           </span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="do">##     h4               pen      -0.037                           </span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="do">##     h5               pen       0.000                           </span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="do">##     h6               pen       0.045                           </span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="do">##     h7               pen       0.336    0.056    0.226    0.446</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="do">##     v1             fixed       1.000             1.000    1.000</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="do">##     v2               pen       1.015    0.028    0.960    1.070</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="do">##     v3               pen       0.977    0.029    0.920    1.034</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="do">##     v4               pen       0.977    0.029    0.920    1.034</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="do">##     v5               pen       0.932    0.030    0.873    0.991</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Covariances:</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="do">##   help ~~                                                      </span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="do">##     voice           free       0.759    0.062    0.637    0.882</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="do">## Intercepts:</span></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h2               pen      -0.012    0.031   -0.073    0.049</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h3               pen      -0.001    0.032   -0.062    0.061</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h4               pen      -0.058    0.033   -0.122    0.006</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h5               pen       0.024    0.031   -0.037    0.084</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h6               pen       0.003    0.029   -0.055    0.060</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h7               pen      -0.004    0.025   -0.054    0.045</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v2               pen      -0.022    0.026   -0.072    0.029</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v3               pen      -0.001    0.025   -0.050    0.048</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v4               pen      -0.001    0.025   -0.050    0.048</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v5               pen       0.004    0.026   -0.047    0.055</span></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="do">##     help            free       0.092    0.049   -0.005    0.189</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="do">##     voice           free       0.148    0.051    0.048    0.248</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="do">## Variances:</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h1              free       0.382    0.029    0.326    0.438</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h2              free       0.213    0.017    0.180    0.247</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h3              free       0.344    0.026    0.293    0.395</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h4              free       0.126    0.012    0.103    0.150</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h5              free       0.162    0.014    0.135    0.189</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h6              free       0.164    0.014    0.137    0.191</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h7              free       0.210    0.016    0.178    0.241</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v1              free       0.176    0.016    0.145    0.208</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v2              free       0.207    0.018    0.171    0.242</span></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v3              free       0.250    0.021    0.209    0.290</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v4              free       0.259    0.021    0.217    0.300</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v5              free       0.290    0.023    0.245    0.335</span></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a><span class="do">##     help            free       0.753    0.069    0.617    0.889</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="do">##     voice           free       0.911    0.074    0.766    1.056</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a><span class="do">## Group 2 [TAIW]:</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a><span class="do">## Latent Variables:</span></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="do">##   help =~                                                      </span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="do">##     h1             fixed       1.000             1.000    1.000</span></span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="do">##     h2               pen       1.103    0.039    1.027    1.180</span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="do">##     h3               pen       0.996    0.040    0.917    1.076</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="do">##     h4               pen       1.196    0.050    1.099    1.293</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="do">##     h5               pen       1.106    0.038    1.031    1.181</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="do">##     h6               pen       1.084    0.051    0.983    1.184</span></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="do">##     h7               pen       0.742    0.065    0.614    0.870</span></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="do">##     v1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="do">##     v2               pen       0.000                           </span></span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a><span class="do">##     v3               pen       0.000                           </span></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a><span class="do">##     v4               pen       0.000                           </span></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a><span class="do">##     v5               pen      -0.000                           </span></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="do">##   voice =~                                                     </span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a><span class="do">##     h1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="do">##     h2               pen      -0.000                           </span></span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="do">##     h3               pen       0.000                           </span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="do">##     h4               pen      -0.037                           </span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a><span class="do">##     h5               pen       0.000                           </span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="do">##     h6               pen       0.045                           </span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a><span class="do">##     h7               pen       0.336    0.056    0.226    0.446</span></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a><span class="do">##     v1             fixed       1.000             1.000    1.000</span></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="do">##     v2               pen       1.015    0.028    0.960    1.070</span></span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a><span class="do">##     v3               pen       0.977    0.029    0.920    1.034</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a><span class="do">##     v4               pen       0.977    0.029    0.920    1.034</span></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a><span class="do">##     v5               pen       0.932    0.030    0.873    0.991</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="do">## Covariances:</span></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="do">##   help ~~                                                      </span></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a><span class="do">##     voice           free       0.428    0.039    0.351    0.505</span></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="do">## Intercepts:</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h2               pen       0.008    0.032   -0.054    0.070</span></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h3               pen      -0.001    0.032   -0.062    0.061</span></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h4               pen       0.058    0.036   -0.013    0.129</span></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h5               pen      -0.012    0.032   -0.075    0.051</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h6               pen       0.003    0.029   -0.055    0.060</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h7               pen      -0.004    0.025   -0.054    0.046</span></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v2               pen       0.022    0.027   -0.030    0.075</span></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v3               pen      -0.001    0.025   -0.050    0.048</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v4               pen      -0.001    0.025   -0.050    0.048</span></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v5               pen       0.002    0.026   -0.049    0.053</span></span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="do">##     help            free      -0.101    0.043   -0.186   -0.017</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="do">##     voice           free      -0.161    0.045   -0.249   -0.074</span></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v1             fixed       0.000             0.000    0.000</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="do">## Variances:</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Type    Estimate  Std.Err     2.5%    97.5%</span></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h1              free       0.407    0.033    0.343    0.471</span></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h2              free       0.267    0.023    0.222    0.312</span></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h3              free       0.411    0.033    0.346    0.476</span></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h4              free       0.240    0.022    0.197    0.283</span></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h5              free       0.303    0.026    0.253    0.354</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h6              free       0.237    0.021    0.196    0.278</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="do">##    .h7              free       0.321    0.026    0.270    0.371</span></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v1              free       0.318    0.027    0.265    0.372</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v2              free       0.208    0.020    0.169    0.247</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v3              free       0.272    0.024    0.225    0.319</span></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v4              free       0.261    0.023    0.215    0.306</span></span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a><span class="do">##    .v5              free       0.361    0.030    0.302    0.419</span></span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a><span class="do">##     help            free       0.461    0.045    0.373    0.549</span></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a><span class="do">##     voice           free       0.568    0.051    0.469    0.668</span></span></code></pre></div>
+<p>The estimated parameters can be inspected in matrix-form through the <code>penfaOut</code> function. The <code>which</code> argument allows to extract the elements of interest. The resulting loading matrices are sparse and equivalent across groups (as demonstrated by the very large value for the second tuning parameter).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">penfaOut</span>(alasso.fitMG, <span class="at">which =</span> <span class="fu">c</span>(<span class="st">&quot;lambda&quot;</span>, <span class="st">&quot;tau&quot;</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="do">## $lambda</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="do">##     help  voice</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="do">## h1 1.000  0.000</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="do">## h2 1.103  0.000</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="do">## h3 0.996  0.000</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="do">## h4 1.196 -0.037</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="do">## h5 1.106  0.000</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="do">## h6 1.084  0.045</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="do">## h7 0.742  0.336</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="do">## v1 0.000  1.000</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="do">## v2 0.000  1.015</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="do">## v3 0.000  0.977</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="do">## v4 0.000  0.977</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="do">## v5 0.000  0.932</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="do">## $tau</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="do">##    intercept</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="do">## h1     0.000</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="do">## h2    -0.012</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="do">## h3    -0.001</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="do">## h4    -0.058</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="do">## h5     0.024</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="do">## h6     0.003</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="do">## h7    -0.004</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="do">## v1     0.000</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="do">## v2    -0.022</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="do">## v3    -0.001</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="do">## v4    -0.001</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="do">## v5     0.004</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="do">## $lambda</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="do">##     help  voice</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="do">## h1 1.000  0.000</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="do">## h2 1.103  0.000</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="do">## h3 0.996  0.000</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="do">## h4 1.196 -0.037</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="do">## h5 1.106  0.000</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="do">## h6 1.084  0.045</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="do">## h7 0.742  0.336</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="do">## v1 0.000  1.000</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="do">## v2 0.000  1.015</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="do">## v3 0.000  0.977</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="do">## v4 0.000  0.977</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="do">## v5 0.000  0.932</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="do">## $tau</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="do">##    intercept</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="do">## h1     0.000</span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="do">## h2     0.008</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="do">## h3    -0.001</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="do">## h4     0.058</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="do">## h5    -0.012</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="do">## h6     0.003</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a><span class="do">## h7    -0.004</span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="do">## v1     0.000</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="do">## v2     0.022</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a><span class="do">## v3    -0.001</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="do">## v4    -0.001</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="do">## v5     0.002</span></span></code></pre></div>
+</div>
+<div id="effective-degrees-of-freedom" class="section level3">
+<h3>Effective degrees of freedom</h3>
+<p>The number of <em>edf</em> of this penalized model is 56.76, which is a fractional number, and is the sum of the contributions from the <em>edf</em> of each model parameter. Each <strong>edf</strong> quantifies the impact of the three penalties on each parameter. Parameters unaffected by the penalization have an <em>edf</em> equal to 1.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>alasso.fitMG<span class="sc">@</span>Inference<span class="sc">$</span>edf.single</span></code></pre></div>
+<pre><code>##        help=~h2        help=~h3        help=~h4        help=~h5        help=~h6 
+##           0.694           0.684           0.740           0.756           0.702 
+##        help=~h7        help=~v2        help=~v3        help=~v4        help=~v5 
+##           0.676           0.001           0.001           0.000           0.001 
+##       voice=~h2       voice=~h3       voice=~h4       voice=~h5       voice=~h6 
+##           0.000           0.000           0.166           0.000           0.220 
+##       voice=~h7       voice=~v2       voice=~v3       voice=~v4       voice=~v5 
+##           0.584           0.679           0.681           0.668           0.698 
+##            h2~1            h3~1            h4~1            h5~1            h6~1 
+##           0.627           0.564           0.875           0.711           0.594 
+##            h7~1            v2~1            v3~1            v4~1            v5~1 
+##           0.617           0.690           0.569           0.554           0.592 
+##          help~1         voice~1          h1~~h1          h2~~h2          h3~~h3 
+##           1.000           1.000           1.000           1.000           1.000 
+##          h4~~h4          h5~~h5          h6~~h6          h7~~h7          v1~~v1 
+##           1.000           1.000           1.000           1.000           1.000 
+##          v2~~v2          v3~~v3          v4~~v4          v5~~v5      help~~help 
+##           1.000           1.000           1.000           1.000           1.000 
+##    voice~~voice     help~~voice     help=~h2.g2     help=~h3.g2     help=~h4.g2 
+##           1.000           1.000           0.303           0.311           0.255 
+##     help=~h5.g2     help=~h6.g2     help=~h7.g2     help=~v2.g2     help=~v3.g2 
+##           0.241           0.291           0.299           0.001           0.001 
+##     help=~v4.g2     help=~v5.g2    voice=~h2.g2    voice=~h3.g2    voice=~h4.g2 
+##           0.000           0.000           0.000           0.000           0.085 
+##    voice=~h5.g2    voice=~h6.g2    voice=~h7.g2    voice=~v2.g2    voice=~v3.g2 
+##           0.000           0.138           0.335           0.318           0.316 
+##    voice=~v4.g2    voice=~v5.g2         h2~1.g2         h3~1.g2         h4~1.g2 
+##           0.329           0.299           0.505           0.436           0.780 
+##         h5~1.g2         h6~1.g2         h7~1.g2         v2~1.g2         v3~1.g2 
+##           0.479           0.406           0.384           0.604           0.431 
+##         v4~1.g2         v5~1.g2       help~1.g2      voice~1.g2       h1~~h1.g2 
+##           0.446           0.415           1.000           1.000           1.000 
+##       h2~~h2.g2       h3~~h3.g2       h4~~h4.g2       h5~~h5.g2       h6~~h6.g2 
+##           1.000           1.000           1.000           1.000           1.000 
+##       h7~~h7.g2       v1~~v1.g2       v2~~v2.g2       v3~~v3.g2       v4~~v4.g2 
+##           1.000           1.000           1.000           1.000           1.000 
+##       v5~~v5.g2   help~~help.g2 voice~~voice.g2  help~~voice.g2 
+##           1.000           1.000           1.000           1.000</code></pre>
+</div>
+<div id="implied-moments" class="section level3">
+<h3>Implied moments</h3>
+<p>The group-specific implied moments (the covariance matrix and the mean vector) can be found via the <code>fitted</code> method.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>implied <span class="ot">&lt;-</span> <span class="fu">fitted</span>(alasso.fitMG)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>implied</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## $LEB</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">## $LEB$cov</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">##    h1    h2    h3    h4    h5    h6    h7    v1    v2    v3    v4    v5   </span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="do">## h1 1.135                                                                  </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="do">## h2 0.831 1.130                                                            </span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="do">## h3 0.750 0.828 1.092                                                      </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="do">## h4 0.872 0.963 0.869 1.137                                                </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="do">## h5 0.833 0.919 0.830 0.965 1.083                                          </span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="do">## h6 0.850 0.938 0.847 0.985 0.940 1.124                                    </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="do">## h7 0.814 0.898 0.811 0.941 0.900 0.920 1.105                              </span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="do">## v1 0.759 0.838 0.756 0.874 0.839 0.863 0.869 1.088                        </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="do">## v2 0.771 0.850 0.768 0.887 0.852 0.876 0.882 0.925 1.145                  </span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="do">## v3 0.742 0.819 0.739 0.854 0.820 0.844 0.849 0.890 0.904 1.120            </span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="do">## v4 0.742 0.818 0.739 0.854 0.820 0.844 0.849 0.890 0.904 0.870 1.128      </span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="do">## v5 0.708 0.781 0.705 0.815 0.783 0.805 0.810 0.849 0.862 0.830 0.830 1.082</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="do">## $LEB$mean</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="do">##    h1    h2    h3    h4    h5    h6    h7    v1    v2    v3    v4    v5 </span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="do">## 0.092 0.090 0.091 0.047 0.126 0.109 0.114 0.148 0.128 0.144 0.144 0.142 </span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="do">## $TAIW</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="do">## $TAIW$cov</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="do">##    h1    h2    h3    h4    h5    h6    h7    v1    v2    v3    v4    v5   </span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="do">## h1 0.868                                                                  </span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="do">## h2 0.509 0.828                                                            </span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="do">## h3 0.459 0.507 0.869                                                      </span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="do">## h4 0.535 0.591 0.533 0.862                                                </span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="do">## h5 0.510 0.562 0.508 0.592 0.867                                          </span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="do">## h6 0.519 0.572 0.517 0.602 0.574 0.821                                    </span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="do">## h7 0.486 0.536 0.484 0.562 0.537 0.549 0.851                              </span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="do">## v1 0.428 0.472 0.427 0.491 0.473 0.489 0.508 0.887                        </span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="do">## v2 0.435 0.479 0.433 0.498 0.480 0.497 0.516 0.577 0.794                  </span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="do">## v3 0.418 0.462 0.417 0.480 0.463 0.478 0.497 0.555 0.564 0.815            </span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="do">## v4 0.418 0.461 0.417 0.479 0.462 0.478 0.497 0.555 0.564 0.543 0.803      </span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="do">## v5 0.399 0.440 0.398 0.458 0.441 0.456 0.474 0.530 0.538 0.518 0.518 0.855</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="do">## $TAIW$mean</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="do">##     h1     h2     h3     h4     h5     h6     h7     v1     v2     v3     v4     v5 </span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="do">## -0.101 -0.103 -0.101 -0.057 -0.124 -0.114 -0.134 -0.161 -0.142 -0.159 -0.158 -0.148</span></span></code></pre></div>
+</div>
+<div id="penalty-matrices" class="section level3">
+<h3>Penalty matrices</h3>
+<p>The complete penalty matrix is stored in <code>alasso.fit@Penalize@Sh.info$S.h</code>, but it can be easily extracted via the <code>penmat</code> function. This matrix is the sum of the penalty matrices for Penalty 1 (<code>sparsity.penmat</code>), Penalty 2 (<code>loadinvariance.penmat</code>), and Penalty 3 (<code>intinvariance.penmat</code>). Unique variances, factor (co)variances and factor means were not affected by the penalization, so their entries in the penalty matrices are equal to zero.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>full.penmat <span class="ot">&lt;-</span> <span class="fu">penmat</span>(alasso.fitMG)</span></code></pre></div>
+<p>The above penalty matrix is the sum of the following three individuals penalty matrices.</p>
+<div id="sparsity" class="section level4">
+<h4>Sparsity</h4>
+<p>This penalty matrix shrinks the small factor loadings of each group to zero. Apart from the group loadings, all the remaining entries of the penalty matrix are equal to zero.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sparsity.penmat <span class="ot">&lt;-</span> <span class="fu">penmat</span>(alasso.fitMG, <span class="at">type =</span> <span class="st">&quot;shrink&quot;</span>, <span class="at">which =</span> <span class="st">&quot;lambda&quot;</span>)</span></code></pre></div>
+</div>
+<div id="loading-invariance" class="section level4">
+<h4>Loading invariance</h4>
+<p>This penalty matrix shrinks the pairwise group differences of the factor loadings to zero.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>loadinvariance.penmat <span class="ot">&lt;-</span> <span class="fu">penmat</span>(alasso.fitMG, <span class="at">type =</span> <span class="st">&quot;diff&quot;</span>, <span class="at">which =</span> <span class="st">&quot;lambda&quot;</span>)</span></code></pre></div>
+</div>
+<div id="intercept-invariance" class="section level4">
+<h4>Intercept invariance</h4>
+<p>This penalty matrix shrinks the pairwise group differences of the intercepts to zero.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>intinvariance.penmat <span class="ot">&lt;-</span> <span class="fu">penmat</span>(alasso.fitMG, <span class="at">type =</span> <span class="st">&quot;diff&quot;</span>, <span class="at">which =</span> <span class="st">&quot;tau&quot;</span>)</span></code></pre></div>
+<p>See <a href="https://egeminiani.github.io/penfa/articles/articles/plotting-penalty-matrix.html">“plotting-penalty-matrix”</a> for details on how to produce interactive plots of the above penalty matrices.</p>
+</div>
+</div>
+<div id="factor-scores" class="section level3">
+<h3>Factor scores</h3>
+<p>Lastly, group-specific factor scores can be calculated via the <code>penfaPredict</code> function. The argument <code>assemble = TRUE</code> allows to assemble the factor scores from each group in a single data frame with a group column.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fscoresMG <span class="ot">&lt;-</span> <span class="fu">penfaPredict</span>(alasso.fitMG, <span class="at">assemble =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fscoresMG)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="do">##          help      voice country</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="do">## 1 -0.33316543  0.1084530     LEB</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 2 -0.04528875 -0.3207557     LEB</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 3  0.45704943  0.6150225     LEB</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 4  0.10695984  0.5475693     LEB</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="do">## 5  0.29861604  0.7514233     LEB</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 6 -0.50626742 -0.4367604     LEB</span></span></code></pre></div>
+</div>
+</div>
+<div id="r-session" class="section level2">
+<h2>R Session</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="do">## R version 4.1.0 (2021-05-18)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Platform: x86_64-w64-mingw32/x64 (64-bit)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Running under: Windows 10 x64 (build 19042)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Matrix products: default</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="do">## locale:</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] LC_COLLATE=English_United States.1252 </span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="do">## [2] LC_CTYPE=English_United States.1252   </span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="do">## [3] LC_MONETARY=English_United States.1252</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="do">## [4] LC_NUMERIC=C                          </span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="do">## [5] LC_TIME=English_United States.1252    </span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="do">## attached base packages:</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="do">## other attached packages:</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] penfa_0.1.0</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="do">## loaded via a namespace (and not attached):</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="do">##  [1] VineCopula_2.4.2    magic_1.5-9         sass_0.4.0         </span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="do">##  [4] VGAM_1.1-5          sfsmisc_1.1-11      jsonlite_1.7.2     </span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="do">##  [7] splines_4.1.0       tmvnsim_1.0-2       distr_2.8.0        </span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="do">## [10] bslib_0.2.5.1       assertthat_0.2.1    stats4_4.1.0       </span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="do">## [13] yaml_2.2.1          numDeriv_2016.8-1.1 pillar_1.6.1       </span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="do">## [16] lattice_0.20-44     startupmsg_0.9.6    glue_1.4.2         </span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="do">## [19] digest_0.6.27       colorspace_2.0-2    htmltools_0.5.1.1  </span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="do">## [22] Matrix_1.3-3        survey_4.0          psych_2.1.6        </span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="do">## [25] pcaPP_1.9-74        pkgconfig_2.0.3     ismev_1.42         </span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="do">## [28] purrr_0.3.4         GJRM_0.2-4          mvtnorm_1.1-2      </span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="do">## [31] scales_1.1.1        copula_1.0-1        tibble_3.1.2       </span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="do">## [34] ADGofTest_0.3       gmp_0.6-2           mgcv_1.8-36        </span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="do">## [37] generics_0.1.0      ggplot2_3.3.5       ellipsis_0.3.2     </span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="do">## [40] distrEx_2.8.0       Rmpfr_0.8-4         mnormt_2.0.2       </span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="do">## [43] survival_3.2-11     magrittr_2.0.1      crayon_1.4.1       </span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="do">## [46] evaluate_0.14       fansi_0.5.0         nlme_3.1-152       </span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="do">## [49] MASS_7.3-54         gsl_2.1-6           tools_4.1.0        </span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="do">## [52] mitools_2.4         lifecycle_1.0.0     pspline_1.0-18     </span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="do">## [55] matrixStats_0.59.0  stringr_1.4.0       trust_0.1-8        </span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="do">## [58] munsell_0.5.0       stabledist_0.7-1    scam_1.2-11        </span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="do">## [61] gamlss.dist_5.3-2   compiler_4.1.0      jquerylib_0.1.4    </span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="do">## [64] evd_2.3-3           rlang_0.4.11        grid_4.1.0         </span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a><span class="do">## [67] trustOptim_0.8.6.2  rmarkdown_2.9       gtable_0.3.0       </span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="do">## [70] abind_1.4-5         DBI_1.1.1           R6_2.5.0           </span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="do">## [73] knitr_1.33          dplyr_1.0.7         utf8_1.2.1         </span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="do">## [76] stringi_1.6.2       matrixcalc_1.0-4    parallel_4.1.0     </span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="do">## [79] Rcpp_1.0.6          vctrs_0.3.8         tidyselect_1.1.1   </span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="do">## [82] xfun_0.24</span></span></code></pre></div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Fischer, R., Ferreira, M. C., Van Meurs, N. et al. (2019). “Does Organizational Formalization Facilitate Voice and Helping Organizational Citizenship Behaviors? It Depends on (National) Uncertainty Norms.” Journal of International Business Studies, 50(1), 125-134. <a href="https://doi.org/10.1057/s41267-017-0132-6">https://doi.org/10.1057/s41267-017-0132-6</a></p></li>
+<li><p>Fischer, R., &amp; Karl, J. A. (2019). “A Primer to (Cross-Cultural) Multi-Group Invariance Testing Possibilities in R.” Frontiers in psychology, 10, 1507. <a href="https://doi.org/10.3389/fpsyg.2019.01507">https://doi.org/10.3389/fpsyg.2019.01507</a></p></li>
+<li><p>Geminiani, E., Marra, G., &amp; Moustaki, I. (2021). “Single- and Multiple-Group Penalized Factor Analysis: A Trust-Region Algorithm Approach with Integrated Automatic Multiple Tuning Parameter Selection.” Psychometrika, 86(1), 65-95. <a href="https://doi.org/10.1007/s11336-021-09751-8">https://doi.org/10.1007/s11336-021-09751-8</a></p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
