@@ -1,6 +1,6 @@
 Package: penfa
 Title: Single- And Multiple-Group Penalized Factor Analysis
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(person(given = "Elena",
              family = "Geminiani",
@@ -32,10 +32,10 @@ LazyData: true
 URL: https://github.com/egeminiani/penfa
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-07-11 17:59:23 UTC; egeminiani
+Packaged: 2021-07-15 06:41:38 UTC; egeminiani
 Author: Elena Geminiani [aut, cre] (<https://orcid.org/0000-0001-5992-9728>),
   Giampiero Marra [aut] (<https://orcid.org/0000-0002-9010-2646>),
   Irini Moustaki [aut] (<https://orcid.org/0000-0001-8371-1251>)
 Maintainer: Elena Geminiani <geminianielena@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-07-12 09:20:02 UTC
+Date/Publication: 2021-07-17 05:50:03 UTC
